@@ -44,6 +44,24 @@ Elements.find = function (selector, parent) {
   throw new TypeError('Не найден элемент [' + selector + ']');
 };
 
+Elements.findAll = function (selector, parent) {
+  var parentElement = null;
+
+  if (typeof (parent) === 'string') {
+    parentElement = Elements.find(parent);
+  } else if (parent) {
+    parentElement = Elements.isTemplate(parent) ? parent.content : parent;
+  } else {
+    parentElement = document;
+  }
+
+  var elementList = parentElement.querySelectorAll(selector);
+  if (elementList.length) {
+    return elementList;
+  }
+  throw new TypeError('Не найден элемент [' + selector + ']');
+};
+
 Elements.visible = function (element /* селектор или Element */, parent) {
   Elements.removeClass(element, 'hidden', parent);
 };
@@ -315,61 +333,62 @@ function MockAdvertisementFactory() {
   }
 }
 
-function Task() {
-  var _advertisements = [];
-
+function Map() {
   var _PIN_WIDTH = 50;
   var _PIN_HEIGHT = 70;
 
-  this.do = function () {
-    initAdvertisements();
-    addPins();
-    addCards();
-    activate();
-  };
+  var _root = document.querySelector('.map');
 
-  function initAdvertisements() {
-    var factory = new MockAdvertisementFactory();
-
-    for (var i = 0; i < 8; i++) {
-      _advertisements.push(factory.create());
-    }
-  }
-
-  function addPins() {
+  this.addPins = function (advertisements) {
     var builder = new PinListBuilder(_PIN_WIDTH, _PIN_HEIGHT);
 
     builder.start();
 
-    for (var i = 0; i < _advertisements.length; i++) {
-      builder.add(_advertisements[i]);
+    for (var i = 0; i < advertisements.length; i++) {
+      builder.add(advertisements[i]);
     }
     var elements = builder.getResult();
     var fragment = document.createDocumentFragment();
     elements.forEach(function (value) {
       fragment.appendChild(value);
     });
-    document.querySelector('.map__pins').appendChild(fragment);
-  }
+    _root.querySelector('.map__pins').appendChild(fragment);
+  };
 
-  function addCards() {
+  this.addCards = function (advertisements) {
     var builder = new CardListBuilder();
 
     builder.start();
-    builder.add(_advertisements[0]);
+    for (var i = 0; i < advertisements.length; i++) {
+      builder.add(advertisements[i]);
+    }
+
     var elements = builder.getResult();
     var fragment = document.createDocumentFragment();
     elements.forEach(function (value) {
       fragment.appendChild(value);
     });
-    var map = document.querySelector('.map');
-    map.insertBefore(fragment, map.querySelector('.map__filters-container'));
-  }
+    _root.insertBefore(fragment, _root.querySelector('.map__filters-container'));
+  };
 
-  function activate() {
-    Elements.removeClass('.map', 'map--faded');
-  }
+  this.activate = function () {
+    _root.classList.remove('map--faded');
+  };
 }
 
-var task = new Task();
-task.do();
+function createMockAdvertisements() {
+  var factory = new MockAdvertisementFactory();
+  var advertisements = [];
+
+  for (var i = 0; i < 8; i++) {
+    advertisements.push(factory.create());
+  }
+
+  return advertisements;
+}
+
+var advertisements = createMockAdvertisements();
+var map = new Map();
+map.addPins(advertisements);
+map.addCards([advertisements[0]]);
+map.activate();
