@@ -334,25 +334,47 @@ function MockAdvertisementFactory() {
 }
 
 function Map() {
+  function MapPins(_parentRoot) {
+    var _root = _parentRoot.querySelector('.map__pins');
+    var _mainPin = _root.querySelector('.map__pin--main');
+
+    init();
+
+    this.add = function (advertisements) {
+      var builder = new PinListBuilder(_PIN_WIDTH, _PIN_HEIGHT);
+
+      builder.start();
+
+      for (var i = 0; i < advertisements.length; i++) {
+        builder.add(advertisements[i]);
+      }
+      var elements = builder.getResult();
+      var fragment = document.createDocumentFragment();
+      elements.forEach(function (value) {
+        fragment.appendChild(value);
+      });
+      _root.appendChild(fragment);
+    };
+
+    function init() {
+      _mainPin.addEventListener('mouseup', onMainPinMouseUp);
+    }
+
+    function onMainPinMouseUp() {
+      _parentObject.activate();
+    }
+  }
+
   var _PIN_WIDTH = 50;
   var _PIN_HEIGHT = 70;
 
+  var _parentObject = this;
   var _root = document.querySelector('.map');
+  var _adForm = new AdForm();
+  var _mapPins = new MapPins(_root);
 
   this.addPins = function (advertisements) {
-    var builder = new PinListBuilder(_PIN_WIDTH, _PIN_HEIGHT);
-
-    builder.start();
-
-    for (var i = 0; i < advertisements.length; i++) {
-      builder.add(advertisements[i]);
-    }
-    var elements = builder.getResult();
-    var fragment = document.createDocumentFragment();
-    elements.forEach(function (value) {
-      fragment.appendChild(value);
-    });
-    _root.querySelector('.map__pins').appendChild(fragment);
+    _mapPins.add(advertisements);
   };
 
   this.addCards = function (advertisements) {
@@ -373,6 +395,32 @@ function Map() {
 
   this.activate = function () {
     _root.classList.remove('map--faded');
+    _adForm.activate();
+  };
+
+  this.disable = function () {
+    _root.classList.add('map--faded');
+    _adForm.disable();
+  };
+}
+
+function AdForm() {
+  var _root = document.querySelector('.ad-form');
+
+  this.activate = function () {
+    _root.classList.remove('ad-form--disabled');
+    var elements = _root.querySelectorAll('fieldset');
+    elements.forEach(function (value) {
+      value.classList.remove('disabled');
+    });
+  };
+
+  this.disable = function () {
+    _root.classList.add('ad-form--disabled');
+    var elements = _root.querySelectorAll('fieldset');
+    elements.forEach(function (value) {
+      value.classList.add('disabled');
+    });
   };
 }
 
@@ -389,6 +437,6 @@ function createMockAdvertisements() {
 
 var advertisements = createMockAdvertisements();
 var map = new Map();
-map.addPins(advertisements);
-map.addCards([advertisements[0]]);
-map.activate();
+//map.addPins(advertisements);
+//map.addCards([advertisements[0]]);
+//map.activate();
