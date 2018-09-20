@@ -1,5 +1,24 @@
 'use strict';
 
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+
+  this.toString = function () {
+    return this.x + ', ' + this.y;
+  };
+}
+
+function Size(width, height) {
+  this.width = width;
+  this.height = height;
+}
+
+function Coord(leftTopCorner, size) {
+  this.leftTopCorner = leftTopCorner;
+  this.size = size;
+}
+
 /* ************************   Utils   ***************************** */
 function Utils() {
 }
@@ -79,15 +98,40 @@ Elements.removeClass = function (element /* селектор или Element */, 
   var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
   el.classList.remove(className);
 };
-/* *********************************************************************** */
-function Point(x, y) {
-  this.x = x;
-  this.y = y;
 
-  this.toString = function () {
-    return this.x + ', ' + this.y;
-  };
-}
+Elements.getLeft = function (element /* селектор или Element */, parent) {
+  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
+  var value = el.style.left || window.getComputedStyle(el).left;
+  return parseInt(/(\d+).*/.exec(value)[1], 10);
+};
+
+Elements.geTop = function (element /* селектор или Element */, parent) {
+  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
+  var value = el.style.top || window.getComputedStyle(el).top;
+  return parseInt(/(\d+).*/.exec(value)[1], 10);
+};
+
+Elements.geWidth = function (element /* селектор или Element */, parent) {
+  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
+  var value = el.style.width || window.getComputedStyle(el).width;
+  return parseInt(/(\d+).*/.exec(value)[1], 10);
+};
+
+Elements.getHeight = function (element /* селектор или Element */, parent) {
+  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
+  var value = el.style.height || window.getComputedStyle(el).height;
+  return parseInt(/(\d+).*/.exec(value)[1], 10);
+};
+
+Elements.getCoord = function (element /* селектор или Element */, parent) {
+  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
+  return new Coord(
+      new Point(Elements.getLeft(el), Elements.geTop(el)),
+      new Size(Elements.geWidth(el), Elements.getHeight(el))
+  );
+};
+
+/* *********************************************************************** */
 
 function Author() {
   this.avatar = null;
@@ -226,7 +270,7 @@ function CardListBuilder() {
   }
 }
 
-function PinListBuilder(pinWidth, pinHeight) {
+function PinListBuilder(pinSize) {
   var _result = null;
   var _templateElement = getTemplate();
   var _currElement = null;
@@ -261,8 +305,8 @@ function PinListBuilder(pinWidth, pinHeight) {
   }
 
   function initCoord() {
-    _currElement.style.left = (_advertisement.location.x - Math.round(pinWidth / 2)) + 'px';
-    _currElement.style.top = (_advertisement.location.y - pinHeight) + 'px';
+    _currElement.style.left = (_advertisement.location.x - Math.round(pinSize.width / 2)) + 'px';
+    _currElement.style.top = (_advertisement.location.y - pinSize.height) + 'px';
   }
 }
 
@@ -336,12 +380,11 @@ function MockAdvertisementFactory() {
 function Map() {
   function MapPins(_parentRoot) {
     var _root = _parentRoot.querySelector('.map__pins');
-    var _mainPin = _root.querySelector('.map__pin--main');
 
-    init();
+    this.mainPin = _root.querySelector('.map__pin--main');
 
     this.add = function (advertisements) {
-      var builder = new PinListBuilder(_PIN_WIDTH, _PIN_HEIGHT);
+      var builder = new PinListBuilder(getPinDefaultSize());
 
       builder.start();
 
@@ -356,25 +399,17 @@ function Map() {
       _root.appendChild(fragment);
     };
 
-    function init() {
-      _mainPin.addEventListener('mouseup', onMainPinMouseUp);
-    }
-
-    function onMainPinMouseUp() {
-      _parentObject.activate();
+    function getPinDefaultSize() {
+      return new Size(50, 70);
     }
   }
 
-  var _PIN_WIDTH = 50;
-  var _PIN_HEIGHT = 70;
-
-  var _parentObject = this;
   var _root = document.querySelector('.map');
-  var _adForm = new AdForm();
-  var _mapPins = new MapPins(_root);
+
+  this.mapPins = new MapPins(_root);
 
   this.addPins = function (advertisements) {
-    _mapPins.add(advertisements);
+    this.mapPins.add(advertisements);
   };
 
   this.addCards = function (advertisements) {
@@ -395,17 +430,20 @@ function Map() {
 
   this.activate = function () {
     _root.classList.remove('map--faded');
-    _adForm.activate();
   };
 
   this.disable = function () {
     _root.classList.add('map--faded');
-    _adForm.disable();
   };
 }
 
 function AdForm() {
   var _root = document.querySelector('.ad-form');
+  var _addrEl = _root.querySelector('#address');
+
+  this.setAddress = function (address) {
+    _addrEl.value = address;
+  };
 
   this.activate = function () {
     _root.classList.remove('ad-form--disabled');
@@ -435,8 +473,41 @@ function createMockAdvertisements() {
   return advertisements;
 }
 
+function Page() {
+  var _map = new Map();
+  var _adForm = new AdForm();
+  var _isActive = false;
+
+  this.onLoad = function () {
+    _map.mapPins.mainPin.addEventListener('mouseup', function () {
+      activate();
+      setAddress(_map.mapPins.mainPin);
+    });
+    setAddress(_map.mapPins.mainPin);
+  };
+
+  function setAddress(pinn) {
+    var coord = Elements.getCoord(pinn);
+    var point = new Point(Math.round(coord.leftTopCorner.x + coord.size.width / 2), Math.round(coord.leftTopCorner.y + (isActivate() ? coord.size.height : coord.size.height / 2)));
+    _adForm.setAddress(point.toString());
+  }
+
+  function activate() {
+    _map.activate();
+    _adForm.activate();
+    _isActive = true;
+  }
+
+  function isActivate() {
+    return _isActive;
+  }
+}
+
 var advertisements = createMockAdvertisements();
-var map = new Map();
+var page = new Page();
+window.onload = page.onLoad;
+
 //map.addPins(advertisements);
 //map.addCards([advertisements[0]]);
 //map.activate();
+
