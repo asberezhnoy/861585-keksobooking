@@ -251,22 +251,6 @@ function Card(advertisement) {
   }
 }
 
-function CardListBuilder() {
-  var _result = null;
-
-  this.start = function () {
-    _result = [];
-  };
-
-  this.add = function (advertisement) {
-    _result.push(new Card(advertisement));
-  };
-
-  this.getResult = function () {
-    return _result;
-  };
-}
-
 function Pin(advertisement, pinSize) {
   var _currElement = Elements.find('.map__pin', '#pin').cloneNode(true);
   var _self = this;
@@ -417,7 +401,7 @@ function Map() {
     return new Size(50, 70);
   }
 
-  function onPinClick(sender, evt) {
+  function onPinClick(sender) {
     showCard(new Card(sender.advertisement));
   }
 
