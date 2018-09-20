@@ -280,22 +280,6 @@ function Pin(advertisement, pinSize) {
 
 }
 
-function PinListBuilder(pinSize) {
-  var _result = null;
-
-  this.start = function () {
-    _result = [];
-  };
-
-  this.add = function (advertisement) {
-    _result.push(new Pin(advertisement, pinSize));
-  };
-
-  this.getResult = function () {
-    return _result;
-  };
-}
-
 function MockAdvertisementFactory() {
   var _userId = -1;
   var _offerTitles = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец", "Маленький ужасный дворец',
@@ -372,14 +356,12 @@ function Map() {
   this.pins = [];
 
   this.addPins = function (advertisements) {
-    var builder = new PinListBuilder(getPinDefaultSize());
-
-    builder.start();
+    var pins = [];
+    var pinSize = getPinDefaultSize();
 
     for (var i = 0; i < advertisements.length; i++) {
-      builder.add(advertisements[i]);
+      pins.push(new Pin(advertisements[i], pinSize));
     }
-    var pins = builder.getResult();
     var fragment = document.createDocumentFragment();
     pins.forEach(function (value) {
       fragment.appendChild(value.element);
