@@ -398,30 +398,17 @@ function Map() {
   }
 }
 
-function RoomNumber() {
-  throw new Error('Нельзя создать объект этого класса');
-}
-RoomNumber.ONE = 1;
-RoomNumber.TWo = 2;
-RoomNumber.Three = 3;
-RoomNumber.HUNDRED = 100;
-
 function Capacity() {
   throw new Error('Нельзя создать объект этого класса');
 }
-Capacity.get = function (roomNumber) {
+Capacity.getCountGuestsFor = function (roomNumber) {
   switch (roomNumber) {
-    case RoomNumber.ONE: return [Capacity.ONE_QUEST];
-    case RoomNumber.TWo: return [Capacity.TWO_QUESTS, Capacity.ONE_QUEST];
-    case RoomNumber.Three: return [Capacity.THREE_QUESTS, Capacity.TWO_QUESTS, Capacity.ONE_QUEST];
-    default: return [Capacity.NO_FOR_GUESTS];
+    case 1: return [1];
+    case 2: return [2, 1];
+    case 3: return [3, 2, 1];
+    default: return [0];
   }
 };
-
-Capacity.ONE_QUEST = 1;
-Capacity.TWO_QUESTS = 2;
-Capacity.THREE_QUESTS = 3;
-Capacity.NO_FOR_GUESTS = 0;
 
 function AdForm() {
   var _root = document.querySelector('.ad-form');
@@ -466,7 +453,7 @@ function AdForm() {
   function setValidCapacity() {
     var newSelectIndex = -1;
     var rooomNumber = +_roomNumberEl.selectedOptions[0].value;
-    var capacity = Capacity.get(rooomNumber);
+    var capacity = Capacity.getCountGuestsFor(rooomNumber);
     var options = _capacityEl.options;
     for (var i = 0; i < options.length; i++) {
       options[i].disabled = capacity.indexOf(+options[i].value) === -1;
