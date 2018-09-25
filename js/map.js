@@ -398,12 +398,32 @@ function Map() {
   }
 }
 
+function Capacity() {
+  throw new Error('Нельзя создать объект этого класса');
+}
+Capacity.getCountGuestsFor = function (roomNumber) {
+  switch (roomNumber) {
+    case 1: return [1];
+    case 2: return [2, 1];
+    case 3: return [3, 2, 1];
+    default: return [0];
+  }
+};
+
 function AdForm() {
   var _root = document.querySelector('.ad-form');
   var _addrEl = _root.querySelector('#address');
+  var _roomNumberEl = _root.querySelector('#room_number');
+  var _capacityEl = _root.querySelector('#capacity');
 
   this.setAddress = function (address) {
     _addrEl.value = address;
+  };
+
+  init();
+
+  this.onLoad = function () {
+    setValidCapacity();
   };
 
   this.activate = function () {
@@ -421,6 +441,28 @@ function AdForm() {
       value.classList.add('disabled');
     });
   };
+
+  function init() {
+    _roomNumberEl.addEventListener('change', onRoomNumberChange);
+  }
+
+  function onRoomNumberChange() {
+    setValidCapacity();
+  }
+
+  function setValidCapacity() {
+    var newSelectIndex = -1;
+    var rooomNumber = +_roomNumberEl.selectedOptions[0].value;
+    var capacity = Capacity.getCountGuestsFor(rooomNumber);
+    var options = _capacityEl.options;
+    for (var i = 0; i < options.length; i++) {
+      options[i].disabled = capacity.indexOf(+options[i].value) === -1;
+      if (!options[i].disabled && i > newSelectIndex) {
+        newSelectIndex = i;
+      }
+    }
+    _capacityEl.selectedIndex = newSelectIndex;
+  }
 }
 
 function Page() {
@@ -435,8 +477,9 @@ function Page() {
       setAddress(_map.mainPin);
       addAdvertisements();
     });
-    setAddress(_map.mainPin);
     getAdvertisements();
+    setAddress(_map.mainPin);
+    _adForm.onLoad();
   };
 
   function setAddress(pinn) {
