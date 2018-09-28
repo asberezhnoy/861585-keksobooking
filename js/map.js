@@ -1,137 +1,10 @@
 'use strict';
 
-function Point(x, y) {
-  this.x = x;
-  this.y = y;
-
-  this.toString = function () {
-    return this.x + ', ' + this.y;
-  };
-}
-
-function Size(width, height) {
-  this.width = width;
-  this.height = height;
-}
-
-function Coord(leftTopCorner, size) {
-  this.leftTopCorner = leftTopCorner;
-  this.size = size;
-}
-
-/* ************************   Utils   ***************************** */
-function Utils() {
-}
-
-Utils.getRandomNumber = function (max, min, handler) {
-  var minValue = Number(min);
-  var maxValue = Number(max);
-
-  var value = minValue ? Math.random() * (maxValue + 1 - minValue) + minValue : Math.random() * (maxValue + 1);
-  return handler ? handler(value) : value;
-};
-
-Utils.getRandomArrayIndex = function (length) {
-  return Utils.getRandomNumber(length - 1, 0, Math.floor);
-};
-
-/* *********************************************************************** */
-
-/* ************************   Elements   ***************************** */
-function Elements() {
-}
-
-Elements.isTemplate = function (element) {
-  return element.tagName === 'TEMPLATE';
-};
-
-Elements.find = function (selector, parent) {
-  var parentElement = null;
-
-  if (typeof (parent) === 'string') {
-    parentElement = Elements.find(parent);
-  } else if (parent) {
-    parentElement = Elements.isTemplate(parent) ? parent.content : parent;
-  } else {
-    parentElement = document;
-  }
-
-  var element = parentElement.querySelector(selector);
-  if (element) {
-    return Elements.isTemplate(element) ? element.content : element;
-  }
-  throw new TypeError('Не найден элемент [' + selector + ']');
-};
-
-Elements.findAll = function (selector, parent) {
-  var parentElement = null;
-
-  if (typeof (parent) === 'string') {
-    parentElement = Elements.find(parent);
-  } else if (parent) {
-    parentElement = Elements.isTemplate(parent) ? parent.content : parent;
-  } else {
-    parentElement = document;
-  }
-
-  var elementList = parentElement.querySelectorAll(selector);
-  if (elementList.length) {
-    return elementList;
-  }
-  throw new TypeError('Не найден элемент [' + selector + ']');
-};
-
-Elements.visible = function (element /* селектор или Element */, parent) {
-  Elements.removeClass(element, 'hidden', parent);
-};
-
-Elements.hide = function (element /* селектор или Element */, parent) {
-  Elements.addClass(element, 'hidden', parent);
-};
-
-Elements.addClass = function (element /* селектор или Element */, className, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  el.classList.add(className);
-};
-
-Elements.removeClass = function (element /* селектор или Element */, className, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  el.classList.remove(className);
-};
-
-Elements.getLeft = function (element /* селектор или Element */, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  var value = el.style.left || window.getComputedStyle(el).left;
-  return parseInt(/(\d+).*/.exec(value)[1], 10);
-};
-
-Elements.geTop = function (element /* селектор или Element */, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  var value = el.style.top || window.getComputedStyle(el).top;
-  return parseInt(/(\d+).*/.exec(value)[1], 10);
-};
-
-Elements.geWidth = function (element /* селектор или Element */, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  var value = el.style.width || window.getComputedStyle(el).width;
-  return parseInt(/(\d+).*/.exec(value)[1], 10);
-};
-
-Elements.getHeight = function (element /* селектор или Element */, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  var value = el.style.height || window.getComputedStyle(el).height;
-  return parseInt(/(\d+).*/.exec(value)[1], 10);
-};
-
-Elements.getCoord = function (element /* селектор или Element */, parent) {
-  var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-  return new Coord(
-      new Point(Elements.getLeft(el), Elements.geTop(el)),
-      new Size(Elements.geWidth(el), Elements.getHeight(el))
-  );
-};
-
-/* *********************************************************************** */
+var Point = window.drawing.Point;
+var Size = window.drawing.Size;
+var Rectangle = window.drawing.Rectangle;
+var Elements = window.Utils.Elements;
+var Random = window.Utils.Random;
 
 function Author() {
   this.avatar = null;
@@ -277,7 +150,6 @@ function Pin(advertisement, pinSize) {
     _currElement.style.left = (advertisement.location.x - Math.round(pinSize.width / 2)) + 'px';
     _currElement.style.top = (advertisement.location.y - pinSize.height) + 'px';
   }
-
 }
 
 function MockAdvertisementFactory() {
@@ -294,16 +166,16 @@ function MockAdvertisementFactory() {
 
     var card = new Advertisement();
     card.author.avatar = 'img/avatars/user0' + _userId + '.png';
-    card.location.x = Utils.getRandomNumber(window.getComputedStyle(document.querySelector('.map__pins')).width.split(/(\d+).+/)[1], 0, Math.floor);
-    card.location.y = Utils.getRandomNumber(630, 130, Math.floor);
+    card.location.x = Random.getRandomNumber(window.getComputedStyle(document.querySelector('.map__pins')).width.split(/(\d+).+/)[1], 0, Math.floor);
+    card.location.y = Random.getRandomNumber(630, 130, Math.floor);
     card.offer.title = getOfferTitle();
     card.offer.address = card.location.toString();
-    card.offer.price = Utils.getRandomNumber(1000000, 1000, toFixed);
-    card.offer.type = _offerTypes[Utils.getRandomArrayIndex(_offerTypes.length)];
-    card.offer.rooms = Utils.getRandomNumber(5, 1, Math.floor);
-    card.offer.guests = Utils.getRandomNumber(10, 1, Math.floor);
-    card.offer.checkin = _checkinList[Utils.getRandomArrayIndex(_checkinList.length)];
-    card.offer.checkout = _checkoutList[Utils.getRandomArrayIndex(_checkoutList.length)];
+    card.offer.price = Random.getRandomNumber(1000000, 1000, toFixed);
+    card.offer.type = _offerTypes[Random.getRandomArrayIndex(_offerTypes.length)];
+    card.offer.rooms = Random.getRandomNumber(5, 1, Math.floor);
+    card.offer.guests = Random.getRandomNumber(10, 1, Math.floor);
+    card.offer.checkin = _checkinList[Random.getRandomArrayIndex(_checkinList.length)];
+    card.offer.checkout = _checkoutList[Random.getRandomArrayIndex(_checkoutList.length)];
     card.offer.features = getFeatures();
     card.offer.description = '';
     card.offer.photos = getPhotos();
@@ -312,7 +184,7 @@ function MockAdvertisementFactory() {
   };
 
   function getOfferTitle() {
-    var index = Utils.getRandomArrayIndex(_offerTitles.length);
+    var index = Random.getRandomArrayIndex(_offerTitles.length);
     var title = _offerTitles[index];
     _offerTitles.splice(index, 1);
     return title;
@@ -320,10 +192,10 @@ function MockAdvertisementFactory() {
 
   function getFeatures() {
     var retdata = [];
-    var length = Utils.getRandomNumber(_features.length, 1, Math.floor);
+    var length = Random.getRandomNumber(_features.length, 1, Math.floor);
 
     for (var i = 0; i < length; i++) {
-      retdata.push(_features[Utils.getRandomArrayIndex(_features.length)]);
+      retdata.push(_features[Random.getRandomArrayIndex(_features.length)]);
     }
 
     return retdata;
@@ -334,7 +206,7 @@ function MockAdvertisementFactory() {
     var retdata = [];
 
     while (photos.length) {
-      var index = Utils.getRandomArrayIndex(photos.length);
+      var index = Random.getRandomArrayIndex(photos.length);
       retdata.push(photos[index]);
       photos.splice(index, 1);
     }
@@ -347,12 +219,109 @@ function MockAdvertisementFactory() {
   }
 }
 
+function MainPin(parent) {
+  var _root = parent.querySelector('.map__pin--main');
+  var _parentClientRect = Elements.getRect(parent);
+  var _clientRect = Elements.getRect(_root);
+  var _isDrag = false;
+  var _startMouseCoord = null;
+  var _self = this;
+  var _moveRect = {
+    left: 0,
+    right: _parentClientRect.leftTopCorner.x + _parentClientRect.size.width - _clientRect.size.width,
+    top: 130,
+    bottom: 630
+  }
+
+  this.Element = _root;
+  this.activateEvent = null;
+  this.moveEvent = null;
+
+  _root.addEventListener('mousedown', onMouseDown);
+  _root.addEventListener('click', onClick);
+
+  function onClick() {
+    if (!_isDrag && _self.activateEvent !== null) {
+      _self.activateEvent();
+    }
+    _isDrag = false;
+  }
+
+  function onMouseUp(evt) {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+
+    if (_isDrag) {
+      move(evt.clientX, evt.clientY);
+      evt.preventDefault();
+      _startMouseCoord = null;
+    }
+  }
+
+  function onMouseDown(evt) {
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    _isDrag = false;
+    _startMouseCoord = new Point(evt.clientX, evt.clientY);
+  }
+
+  function onMouseMove(evt) {
+    if (isDraggin(evt.clientX, evt.clientY)) {
+      _isDrag = true;
+      move(evt.clientX, evt.clientY);
+      if (_self.onMouseMove != null) {
+        _self.onMouseMove();
+      }
+    }
+  }
+
+  function move(x, y) {
+    var shift = {
+      offsetX: _startMouseCoord.x - x,
+      offsetY: _startMouseCoord.y - y
+    };
+
+    _root.style.left = getNewLeft(shift.offsetX) + 'px';
+    _root.style.top = getNewTop(shift.offsetY) + 'px';
+
+    _startMouseCoord.x = x;
+    _startMouseCoord.y = y;
+  }
+
+  function isDraggin(x, y) {
+    return Math.abs(_startMouseCoord.x - x) >= 5 || Math.abs(_startMouseCoord.y - y) >= 5;
+  }
+
+  function getNewLeft(offsetX) {
+    var newValue = _root.offsetLeft - offsetX;
+
+    if (newValue < _moveRect.left) {
+      newValue = _moveRect.left;
+    } else if (newValue > _moveRect.right) {
+      newValue = _moveRect.right;
+    }
+    return newValue;
+  }
+
+  function getNewTop(offsetY) {
+    var newValue = _root.offsetTop - offsetY;
+
+    if (newValue < _moveRect.top) {
+      newValue = _moveRect.top;
+    } else if (newValue > _moveRect.bottom) {
+      newValue = _moveRect.bottom;
+    }
+    return newValue;
+  }
+}
+
 function Map() {
   var _root = document.querySelector('.map');
   var _mapPins = _root.querySelector('.map__pins');
   var _showedCard = null;
 
-  this.mainPin = _mapPins.querySelector('.map__pin--main');
+  this.mainPin = new MainPin(_mapPins);
   this.pins = [];
 
   this.addPins = function (advertisements) {
@@ -472,18 +441,21 @@ function Page() {
   var _advertisements = [];
 
   this.onLoad = function () {
-    _map.mainPin.addEventListener('mouseup', function () {
+    _map.mainPin.activateEvent = function () {
       activate();
-      setAddress(_map.mainPin);
+      setAddress(_map.mainPin.Element);
       addAdvertisements();
-    });
+    };
+    _map.mainPin.onMouseMove = function () {
+      setAddress(_map.mainPin.Element);
+    };
     getAdvertisements();
-    setAddress(_map.mainPin);
+    setAddress(_map.mainPin.Element);
     _adForm.onLoad();
   };
 
   function setAddress(pinn) {
-    var coord = Elements.getCoord(pinn);
+    var coord = Elements.getRect(pinn);
     var point = new Point(Math.round(coord.leftTopCorner.x + coord.size.width / 2), Math.round(coord.leftTopCorner.y + (isActivate() ? coord.size.height : coord.size.height / 2)));
     _adForm.setAddress(point.toString());
   }
