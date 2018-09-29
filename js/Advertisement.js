@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var Point = window.drawing.Point;
+  var Point = window.DrawingClasses.Point;
 
   function Author() {
     this.avatar = null;

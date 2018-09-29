@@ -1,6 +1,10 @@
 'use strict';
 
 (function () {
+  var Rectangle = window.DrawingClasses.Rectangle;
+  var Point = window.DrawingClasses.Point;
+  var Size = window.DrawingClasses.Size;
+
   function Random() {
   }
 
@@ -114,9 +118,9 @@
 
   Elements.getRect = function (element /* селектор или Element */, parent) {
     var el = typeof (element) === 'string' ? Elements.find(element, parent) : element;
-    return new window.drawing.Rectangle(
-        new window.drawing.Point(Elements.getLeft(el), Elements.geTop(el)),
-        new window.drawing.Size(Elements.geWidth(el), Elements.getHeight(el))
+    return new Rectangle(
+        new Point(Elements.getLeft(el), Elements.geTop(el)),
+        new Size(Elements.geWidth(el), Elements.getHeight(el))
     );
   };
 

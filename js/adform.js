@@ -46,7 +46,8 @@
     function setValidCapacity() {
       var newSelectIndex = -1;
       var rooomNumber = +_roomNumberEl.selectedOptions[0].value;
-      var capacity = Building.getCountGuestsFor(rooomNumber);
+      var capacity = rooomNumber in Building.capacity ? Building.capacity[rooomNumber] : [0];
+
       var options = _capacityEl.options;
       for (var i = 0; i < options.length; i++) {
         options[i].disabled = capacity.indexOf(+options[i].value) === -1;

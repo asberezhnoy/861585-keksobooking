@@ -1,6 +1,6 @@
 'use strict';
 
-var Point = window.drawing.Point;
+var Point = window.DrawingClasses.Point;
 var Elements = window.Utils.Elements;
 var AdForm = window.AdForm;
 var Map = window.Map;

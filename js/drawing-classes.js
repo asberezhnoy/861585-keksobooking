@@ -21,8 +21,8 @@
     this.size = size;
   }
 
-  window.drawing = {};
-  window.drawing.Point = Point;
-  window.drawing.Size = Size;
-  window.drawing.Rectangle = Rectangle;
+  window.DrawingClasses = {};
+  window.DrawingClasses.Point = Point;
+  window.DrawingClasses.Size = Size;
+  window.DrawingClasses.Rectangle = Rectangle;
 })();

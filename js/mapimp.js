@@ -2,8 +2,8 @@
 
 (function () {
   var Elements = window.Utils.Elements;
-  var Point = window.drawing.Point;
-  var Size = window.drawing.Size;
+  var Point = window.DrawingClasses.Point;
+  var Size = window.DrawingClasses.Size;
   var Card = window.Card;
 
   function Pin(advertisement, pinSize) {
