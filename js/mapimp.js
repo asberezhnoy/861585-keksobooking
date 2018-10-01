@@ -49,18 +49,9 @@
     };
 
     this.Element = _root;
-    this.activateEvent = null;
-    this.moveEvent = null;
+    this.dragEvent = null;
 
     _root.addEventListener('mousedown', onMouseDown);
-    _root.addEventListener('click', onClick);
-
-    function onClick() {
-      if (!_isDrag && _self.activateEvent !== null) {
-        _self.activateEvent();
-      }
-      _isDrag = false;
-    }
 
     function onMouseUp(evt) {
       document.removeEventListener('mousemove', onMouseMove);
@@ -68,8 +59,11 @@
 
       if (_isDrag) {
         move(evt.clientX, evt.clientY);
-        evt.preventDefault();
         _startMouseCoord = null;
+
+        if (_self.dragEvent !== null) {
+          _self.dragEvent();
+        }
       }
     }
 

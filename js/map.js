@@ -37,8 +37,9 @@ function addAdvertisements() {
 }
 
 window.onload = function () {
-  _map.mainPin.activateEvent = function () {
+  _map.mainPin.dragEvent = function () {
     activate();
+    _map.mainPin.dragEvent = null;
     setAddress(_map.mainPin.Element);
     addAdvertisements();
   };
