@@ -30,17 +30,20 @@ function getAdvertisements() {
   var storage = new AdvertisementStorage();
   storage.get(function (advertisements) {
     _map.addPins(advertisements);
-  }, function () {
-
+  }, function (error) {
+    var element = Elements.find('.error', '#error').cloneNode(true).querySelector('.error__message');
+    element.textContent = error;
+    var main = document.body.querySelector('main');
+    main.insertBefore(element, main.firstChild);
   });
 }
 
 window.onload = function () {
   _map.mainPin.dragEvent = function () {
-    activate();
     _map.mainPin.dragEvent = null;
     setAddress(_map.mainPin.Element);
     getAdvertisements();
+    activate();
   };
   _map.mainPin.onMouseMove = function () {
     setAddress(_map.mainPin.Element);
