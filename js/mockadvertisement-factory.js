@@ -13,13 +13,13 @@
     var _checkoutList = ['12:00', '13:00', '14:00'];
     var _features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 
-    this.get = function () {
+    this.get = function (callbackLoad) {
       var advertisements = [];
 
       for (var i = 0; i < 8; i++) {
         advertisements.push(create());
       }
-      return advertisements;
+      callbackLoad(advertisements);
     };
 
     function create() {

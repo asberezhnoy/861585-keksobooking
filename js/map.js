@@ -9,7 +9,6 @@ var AdvertisementStorage = window.AdvertisementStorage;
 var _map = new Map();
 var _adForm = new AdForm();
 var _isActive = false;
-var _advertisements = [];
 
 function setAddress(pinn) {
   var coord = Elements.getRect(pinn);
@@ -29,11 +28,11 @@ function isActivate() {
 
 function getAdvertisements() {
   var storage = new AdvertisementStorage();
-  _advertisements = storage.get();
-}
+  storage.get(function (advertisements) {
+    _map.addPins(advertisements);
+  }, function () {
 
-function addAdvertisements() {
-  _map.addPins(_advertisements);
+  });
 }
 
 window.onload = function () {
@@ -41,12 +40,11 @@ window.onload = function () {
     activate();
     _map.mainPin.dragEvent = null;
     setAddress(_map.mainPin.Element);
-    addAdvertisements();
+    getAdvertisements();
   };
   _map.mainPin.onMouseMove = function () {
     setAddress(_map.mainPin.Element);
   };
-  getAdvertisements();
   setAddress(_map.mainPin.Element);
   _adForm.onLoad();
 };
