@@ -22,6 +22,7 @@
 
     this.post = function (data) {
       _xhr.open('POST', _url);
+      _xhr.setRequestHeader('Content-Type', 'multipart/form-data');
       _xhr.send(data);
     };
 

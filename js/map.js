@@ -5,12 +5,16 @@ var Elements = window.Utils.Elements;
 var AdForm = window.AdForm;
 var Map = window.Map;
 var AdvertisementStorage = window.AdvertisementStorage;
+var Messages = window.Messages;
 
 var _map = new Map();
 var _adForm = new AdForm();
 var _isActive = false;
+var _errorMsg = null;
+var _successMsg = null;
 
 _adForm.resetEvent = disable;
+_adForm.submitEvent = upload;
 
 function setAddress(pinn) {
   var coord = Elements.getRect(pinn);
@@ -34,16 +38,37 @@ function isActivate() {
   return _isActive;
 }
 
+function upload(data) {
+  var storage = new AdvertisementStorage();
+  storage.save(data, function () {
+    disable();
+    displaySuccess();
+  }, function (error) {
+    displayError(error);
+  });
+}
+
 function getAdvertisements() {
   var storage = new AdvertisementStorage();
   storage.get(function (advertisements) {
     _map.addPins(advertisements);
   }, function (error) {
-    var element = Elements.find('.error', '#error').cloneNode(true).querySelector('.error__message');
-    element.textContent = error;
-    var main = document.body.querySelector('main');
-    main.insertBefore(element, main.firstChild);
+    displayError(error);
   });
+}
+
+function displaySuccess() {
+  if (!_successMsg) {
+    _successMsg = new Messages.Success(document.body.querySelector('main'));
+  }
+  _successMsg.show();
+}
+
+function displayError(message) {
+  if (!_errorMsg) {
+    _errorMsg = new Messages.Error(document.body.querySelector('main'));
+  }
+  _errorMsg.show(message);
 }
 
 window.onload = function () {

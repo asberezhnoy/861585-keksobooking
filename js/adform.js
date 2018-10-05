@@ -2,7 +2,6 @@
 
 (function () {
   var Building = window.Building;
-  var AdvertisementStorage = window.AdvertisementStorage;
 
   function AdForm() {
     var _root = document.querySelector('.ad-form');
@@ -13,6 +12,7 @@
     var _btnSubmit = _root.querySelector('button[type="submit"');
     var _self = this;
 
+    this.submitEvent = null;
     this.resetEvent = null;
 
     this.setAddress = function (address) {
@@ -46,17 +46,9 @@
 
     function onSubmit(evt) {
       evt.preventDefault();
-      var storage = new AdvertisementStorage();
-      storage.save(new FormData(_root), function () {
-        _root.reset();
-      }, function () {
-        _root.reset();
-      });
-    }
-
-    function reset() {
-      _root.reset();
-      setValidCapacity();
+      if (_self.submitEvent) {
+        _self.submitEvent(new FormData(_root));
+      }
     }
 
     function onReset(evt) {
@@ -68,6 +60,11 @@
     }
 
     function onRoomNumberChange() {
+      setValidCapacity();
+    }
+
+    function reset() {
+      _root.reset();
       setValidCapacity();
     }
 
