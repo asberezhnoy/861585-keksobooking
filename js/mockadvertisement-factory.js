@@ -22,6 +22,8 @@
       callbackLoad(advertisements);
     };
 
+    this.save = function () {};
+
     function create() {
       _userId++;
 

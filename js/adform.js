@@ -2,18 +2,26 @@
 
 (function () {
   var Building = window.Building;
+  var AdvertisementStorage = window.AdvertisementStorage;
 
   function AdForm() {
     var _root = document.querySelector('.ad-form');
     var _addrEl = _root.querySelector('#address');
     var _roomNumberEl = _root.querySelector('#room_number');
     var _capacityEl = _root.querySelector('#capacity');
+    var _btnReset = _root.querySelector('button[type="reset"');
+    var _btnSubmit = _root.querySelector('button[type="submit"');
+    var _self = this;
+
+    this.resetEvent = null;
 
     this.setAddress = function (address) {
       _addrEl.value = address;
     };
 
-    init();
+    _btnReset.addEventListener('click', onReset);
+    _btnSubmit.addEventListener('click', onSubmit);
+    _roomNumberEl.addEventListener('change', onRoomNumberChange);
 
     this.onLoad = function () {
       setValidCapacity();
@@ -28,6 +36,7 @@
     };
 
     this.disable = function () {
+      reset();
       _root.classList.add('ad-form--disabled');
       var elements = _root.querySelectorAll('fieldset');
       elements.forEach(function (value) {
@@ -35,8 +44,27 @@
       });
     };
 
-    function init() {
-      _roomNumberEl.addEventListener('change', onRoomNumberChange);
+    function onSubmit(evt) {
+      evt.preventDefault();
+      var storage = new AdvertisementStorage();
+      storage.save(new FormData(_root), function () {
+        _root.reset();
+      }, function () {
+        _root.reset();
+      });
+    }
+
+    function reset() {
+      _root.reset();
+      setValidCapacity();
+    }
+
+    function onReset(evt) {
+      evt.preventDefault();
+      reset();
+      if (_self.resetEvent) {
+        _self.resetEvent();
+      }
     }
 
     function onRoomNumberChange() {

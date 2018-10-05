@@ -49,9 +49,14 @@
     };
 
     this.Element = _root;
-    this.dragEvent = null;
+    this.activateEvent = null;
 
     _root.addEventListener('mousedown', onMouseDown);
+
+    this.disable = function () {
+      _root.style.left = _clientRect.leftTopCorner.x + 'px';
+      _root.style.top = _clientRect.leftTopCorner.y + 'px';
+    };
 
     function onMouseUp(evt) {
       document.removeEventListener('mousemove', onMouseMove);
@@ -61,8 +66,8 @@
         move(evt.clientX, evt.clientY);
         _startMouseCoord = null;
 
-        if (_self.dragEvent !== null) {
-          _self.dragEvent();
+        if (_self.activateEvent !== null) {
+          _self.activateEvent();
         }
       }
     }
@@ -129,22 +134,22 @@
     var _root = document.querySelector('.map');
     var _mapPins = _root.querySelector('.map__pins');
     var _showedCard = null;
+    var _mainPin = new MainPin(_mapPins);
+    var _pins = [];
 
-    this.mainPin = new MainPin(_mapPins);
-    this.pins = [];
+    this.mainPin = _mainPin;
 
     this.addPins = function (advertisements) {
-      var pins = [];
+      _pins.length = 0;
       var pinSize = getPinDefaultSize();
 
       for (var i = 0; i < advertisements.length; i++) {
-        pins.push(new Pin(advertisements[i], pinSize));
+        _pins.push(new Pin(advertisements[i], pinSize));
       }
       var fragment = document.createDocumentFragment();
-      pins.forEach(function (value) {
+      _pins.forEach(function (value) {
         fragment.appendChild(value.element);
         value.clickEvent = onPinClick;
-        pins.push(value);
       });
       _mapPins.appendChild(fragment);
     };
@@ -154,7 +159,12 @@
     };
 
     this.disable = function () {
+      _pins.forEach(function (pin) {
+        _mapPins.removeChild(pin.element);
+      });
+
       _root.classList.add('map--faded');
+      _mainPin.disable();
     };
 
     function getPinDefaultSize() {

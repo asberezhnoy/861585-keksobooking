@@ -5,14 +5,12 @@
 
   function Storage() {
     this.get = function (callbackLoad, callbackError) {
-      Backend.download(function (data) {
-        onLoad(data, callbackLoad);
-      }, callbackError);
+      Backend.download(callbackLoad, callbackError);
     };
 
-    function onLoad(data, callbackLoad) {
-      callbackLoad(data);
-    }
+    this.save = function (data, callbackLoad, callbackError) {
+      Backend.upload(data, callbackLoad, callbackError);
+    };
   }
 
   window.AdvertisementStorage = Storage;
