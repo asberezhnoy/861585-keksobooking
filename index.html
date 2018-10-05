@@ -100,7 +100,7 @@
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="title">Заголовок объявления</label>
-          <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
+          <input id="title" name="title" type="text" required minlength="30" maxlength="100" placeholder="Милая, уютная квартирка в центре Токио">
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес</label>
@@ -117,7 +117,7 @@
         </fieldset>
         <fieldset class="ad-form__element">
           <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
-          <input id="price" name="price" type="number" placeholder="5000">
+          <input id="price" name="price" required max="1000000" type="number" placeholder="5000">
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time">
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>
@@ -253,7 +253,9 @@
   <script src="js/building.js"></script>
   <script src="js/advertisement.js"></script>
   <script src="js/card.js"></script>
-  <script src="js/mockadvertisement-factory.js"></script>
+  <script src="js/backend.js"></script>
+  <script src="js/advertisementstorage.js"></script>
+  <script src="js/messages.js"></script>
   <script src="js/adform.js"></script>
   <script src="js/mapimp.js"></script>
   <script src="js/map.js"></script>
