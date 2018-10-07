@@ -51,7 +51,7 @@ function upload(data) {
 function getAdvertisements() {
   var storage = new AdvertisementStorage();
   storage.get(function (advertisements) {
-    _map.addPins(advertisements);
+    _map.setAdvertisements(advertisements);
   }, function (error) {
     displayError(error);
   });
@@ -72,15 +72,15 @@ function displayError(message) {
 }
 
 window.onload = function () {
-  _map.mainPin.activateEvent = function () {
-    _map.mainPin.activateEvent = null;
-    setAddress(_map.mainPin.Element);
+  _map.mainPin.dragEvent = function () {
+    _map.mainPin.dragEvent = null;
+    setAddress(_map.mainPin.element);
     getAdvertisements();
     activate();
   };
-  _map.mainPin.onMouseMove = function () {
-    setAddress(_map.mainPin.Element);
+  _map.mainPin.mouseMoveEvent = function () {
+    setAddress(_map.mainPin.element);
   };
-  setAddress(_map.mainPin.Element);
+  setAddress(_map.mainPin.element);
   _adForm.onLoad();
 };
