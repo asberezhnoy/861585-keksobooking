@@ -10,6 +10,9 @@
     var _capacityEl = _root.querySelector('#capacity');
     var _btnReset = _root.querySelector('button[type="reset"');
     var _btnSubmit = _root.querySelector('button[type="submit"');
+    var _titleEl = _root.querySelector('#title');
+    var _priceeEl = _root.querySelector('#price');
+
     var _self = this;
 
     this.submitEvent = null;
@@ -46,7 +49,11 @@
 
     function onSubmit(evt) {
       evt.preventDefault();
-      if (_self.submitEvent) {
+      if (!_titleEl.checkValidity()) {
+        _titleEl.setCustomValidity('Введите название объявления');
+      } else if (!_priceeEl.checkValidity()) {
+        _priceeEl.setCustomValidity('Введите цену за ночья');
+      } else if (_self.submitEvent) {
         _self.submitEvent(new FormData(_root));
       }
     }

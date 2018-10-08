@@ -249,7 +249,7 @@
     };
 
     this.disable = function () {
-      _pins.forEach(function (pin) {
+      _filterPins.forEach(function (pin) {
         _mapPins.removeChild(pin.element);
       });
 
