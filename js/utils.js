@@ -124,7 +124,22 @@
     );
   };
 
-  window.Utils = {};
-  window.Utils.Random = Random;
-  window.Utils.Elements = Elements;
+  function DebounceTimer(callback) {
+    var _callback = callback;
+    var _id = null;
+
+    this.setTimeout = function (value) {
+      if (_id) {
+        window.clearTimeout(_id);
+        _id = null;
+      }
+      _id = setTimeout(_callback, value);
+    };
+  }
+
+  window.Utils = {
+    Random: Random,
+    Elements: Elements,
+    DebounceTimer: DebounceTimer
+  };
 })();

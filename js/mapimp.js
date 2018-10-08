@@ -2,6 +2,7 @@
 
 (function () {
   var Elements = window.Utils.Elements;
+  var DebounceTimer = window.Utils.DebounceTimer;
   var Point = window.DrawingClasses.Point;
   var Size = window.DrawingClasses.Size;
   var Card = window.Card;
@@ -146,7 +147,7 @@
       _root.querySelector('#filter-elevator'),
       _root.querySelector('#filter-conditioner')
     ];
-    var _timeoutId = null;
+    var _timer = new DebounceTimer(filter);
     var _self = this;
     var _advertisements = [];
 
@@ -157,7 +158,7 @@
     _housingRoomsEl.addEventListener('change', onChange);
     _housingGuestsEl.addEventListener('change', onChange);
     _featuresEl.forEach(function (item) {
-      item.addEventListener('change', onChangeFlags);
+      item.addEventListener('change', onChangeFeatures);
     });
 
     this.setAdvertisements = function (advertisements) {
@@ -168,14 +169,8 @@
       filter();
     }
 
-    function onChangeFlags() {
-      if (_timeoutId) {
-        window.clearTimeout(_timeoutId);
-        _timeoutId = null;
-      }
-      _timeoutId = setTimeout(function () {
-        filter();
-      }, 500);
+    function onChangeFeatures() {
+      _timer.setTimeout(500);
     }
 
     function filter() {
