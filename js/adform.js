@@ -22,8 +22,8 @@
       _addrEl.value = address;
     };
 
-    _btnReset.addEventListener('click', onReset);
     _btnSubmit.addEventListener('click', onSubmit);
+    _btnReset.addEventListener('click', onReset);
     _roomNumberEl.addEventListener('change', onRoomNumberChange);
 
     this.onLoad = function () {
@@ -48,12 +48,12 @@
     };
 
     function onSubmit(evt) {
-      evt.preventDefault();
-      if (!_titleEl.checkValidity()) {
-        _titleEl.setCustomValidity('Введите название объявления');
-      } else if (!_priceeEl.checkValidity()) {
-        _priceeEl.setCustomValidity('Введите цену за ночья');
-      } else if (_self.submitEvent) {
+      if (!_titleEl.checkValidity() || !_priceeEl.checkValidity()) {
+        return;
+      }
+
+      if (_self.submitEvent) {
+        evt.preventDefault();
         _self.submitEvent(new FormData(_root));
       }
     }

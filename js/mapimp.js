@@ -139,14 +139,7 @@
     var _housingPriceEl = _root.querySelector('#housing-price');
     var _housingRoomsEl = _root.querySelector('#housing-rooms');
     var _housingGuestsEl = _root.querySelector('#housing-guests');
-    var _featuresEl = [
-      _root.querySelector('#filter-wifi'),
-      _root.querySelector('#filter-dishwasher'),
-      _root.querySelector('#filter-parking'),
-      _root.querySelector('#filter-washer'),
-      _root.querySelector('#filter-elevator'),
-      _root.querySelector('#filter-conditioner')
-    ];
+    var _featuresEl = _root.querySelectorAll('#filter-wifi, #filter-dishwasher, #filter-parking, #filter-washer, #filter-elevator, #filter-conditioner');
     var _timer = new DebounceTimer(filter);
     var _self = this;
     var _advertisements = [];
@@ -211,7 +204,7 @@
     }
 
     function isFilterByFeatures(item) {
-      return _featuresEl.every(function (element) {
+      return [].every.call(_featuresEl, function (element) {
         if (element.checked && item.offer.features.indexOf(element.value) === -1) {
           return false;
         }
