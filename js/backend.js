@@ -1,8 +1,8 @@
 'use strict';
 
 (function () {
-  var uploadUrl = 'https://js.dump.academy/keksobooking';
-  var downloadUrl = 'https://js.dump.academy/keksobooking/data';
+  var UPLOAD_URL = 'https://js.dump.academy/keksobooking';
+  var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
 
   function Request(url, callbacknLoad, callbackError) {
     var _url = url;
@@ -58,16 +58,15 @@
     }
   }
 
-  window.Backend = {};
+  window.Backend = {
+    upload: function (data, callbacknLoad, callbackError) {
+      var request = new Request(UPLOAD_URL, callbacknLoad, callbackError);
+      request.post(data);
+    },
 
-  window.Backend.upload = function (data, callbacknLoad, callbackError) {
-    var request = new Request(uploadUrl, callbacknLoad, callbackError);
-    request.post(data);
+    download: function (callbacknLoad, callbackError) {
+      var request = new Request(DOWNLOAD_URL, callbacknLoad, callbackError);
+      request.get();
+    }
   };
-
-  window.Backend.download = function (callbacknLoad, callbackError) {
-    var request = new Request(downloadUrl, callbacknLoad, callbackError);
-    request.get();
-  };
-
 })();

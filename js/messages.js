@@ -3,6 +3,8 @@
 (function () {
   var Elements = window.Utils.Elements;
 
+  var ESCAPE_CODE = 27;
+
   function Error(parent) {
     var _parent = parent;
     var _element = Elements.find('.error', '#error').cloneNode(true);
@@ -41,7 +43,7 @@
     };
 
     function close(evt) {
-      if (evt instanceof KeyboardEvent && evt.keyCode !== 27) {
+      if (evt instanceof KeyboardEvent && evt.keyCode !== ESCAPE_CODE) {
         return;
       }
       _parent.removeChild(_element);

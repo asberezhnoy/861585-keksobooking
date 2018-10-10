@@ -10,6 +10,9 @@
     var _capacityEl = _root.querySelector('#capacity');
     var _btnReset = _root.querySelector('button[type="reset"');
     var _btnSubmit = _root.querySelector('button[type="submit"');
+    var _titleEl = _root.querySelector('#title');
+    var _priceeEl = _root.querySelector('#price');
+
     var _self = this;
 
     this.submitEvent = null;
@@ -19,8 +22,8 @@
       _addrEl.value = address;
     };
 
-    _btnReset.addEventListener('click', onReset);
     _btnSubmit.addEventListener('click', onSubmit);
+    _btnReset.addEventListener('click', onReset);
     _roomNumberEl.addEventListener('change', onRoomNumberChange);
 
     this.onLoad = function () {
@@ -45,8 +48,12 @@
     };
 
     function onSubmit(evt) {
-      evt.preventDefault();
+      if (!_titleEl.checkValidity() || !_priceeEl.checkValidity()) {
+        return;
+      }
+
       if (_self.submitEvent) {
+        evt.preventDefault();
         _self.submitEvent(new FormData(_root));
       }
     }
