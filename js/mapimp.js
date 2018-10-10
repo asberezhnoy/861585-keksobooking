@@ -7,6 +7,19 @@
   var Size = window.DrawingClasses.Size;
   var Card = window.Card;
 
+  var DRAG_MINOFFSET_X = 5;
+  var DRAG_MINOFFSET_Y = 5;
+  var TIMEOUT_CHANGE_FEATURES = 500;
+  var FILTER_PRICE_HIGH = 50000;
+  var FILTER_PRICE_LOW = 10000;
+  var FILTER_ANY = 'any';
+  var PIN_WIDTH = 50;
+  var PIN_HEIGHT = 70;
+  var FILTERPINS_MAX_SIZE = 5;
+  var MAINPIN_MOVEMENT_BORDER_LEFT = 0;
+  var MAINPIN_MOVEMENT_BORDER_TOP = 130;
+  var MAINPIN_MOVEMENT_BORDER_BOTTOM = 630;
+
   function Pin(advertisement, pinSize) {
     var _currElement = Elements.find('.map__pin', '#pin').cloneNode(true);
     var _self = this;
@@ -43,10 +56,10 @@
     var _startMouseCoord = null;
     var _self = this;
     var _moveRect = {
-      left: 0,
+      left: MAINPIN_MOVEMENT_BORDER_LEFT,
       right: _parentClientRect.leftTopCorner.x + _parentClientRect.size.width - _clientRect.size.width,
-      top: 130,
-      bottom: 630
+      top: MAINPIN_MOVEMENT_BORDER_TOP,
+      bottom: MAINPIN_MOVEMENT_BORDER_BOTTOM
     };
 
     this.element = _root;
@@ -106,7 +119,7 @@
     }
 
     function isDraggin(x, y) {
-      return Math.abs(_startMouseCoord.x - x) >= 5 || Math.abs(_startMouseCoord.y - y) >= 5;
+      return Math.abs(_startMouseCoord.x - x) >= DRAG_MINOFFSET_X || Math.abs(_startMouseCoord.y - y) >= DRAG_MINOFFSET_Y;
     }
 
     function getNewLeft(offsetX) {
@@ -163,7 +176,7 @@
     }
 
     function onChangeFeatures() {
-      _timer.setTimeout(500);
+      _timer.setTimeout(TIMEOUT_CHANGE_FEATURES);
     }
 
     function filter() {
@@ -180,27 +193,27 @@
     }
 
     function isFilterByType(item) {
-      return _bookingTypeEl.value === 'any' || _bookingTypeEl.value === item.offer.type;
+      return _bookingTypeEl.value === FILTER_ANY || _bookingTypeEl.value === item.offer.type;
     }
 
     function isFilterByPrice(item) {
       if (_housingPriceEl.value === 'middle') {
-        return item.offer.price >= 10000 && item.offer.price <= 50000;
+        return item.offer.price >= FILTER_PRICE_LOW && item.offer.price <= FILTER_PRICE_HIGH;
       } else if (_housingPriceEl.value === 'low') {
-        return item.offer.price < 10000;
+        return item.offer.price < FILTER_PRICE_LOW;
       } else if (_housingPriceEl.value === 'high') {
-        return item.offer.price > 50000;
+        return item.offer.price > FILTER_PRICE_HIGH;
       } else {
         return true;
       }
     }
 
     function isFilterByRooms(item) {
-      return _housingRoomsEl.value === 'any' || _housingRoomsEl.value === item.offer.rooms.toString();
+      return _housingRoomsEl.value === FILTER_ANY || _housingRoomsEl.value === item.offer.rooms.toString();
     }
 
     function isFilterByHousingGuest(item) {
-      return _housingGuestsEl.value === 'any' || _housingGuestsEl.value === item.offer.guests.toString();
+      return _housingGuestsEl.value === FILTER_ANY || _housingGuestsEl.value === item.offer.guests.toString();
     }
 
     function isFilterByFeatures(item) {
@@ -251,7 +264,7 @@
     };
 
     function getPinDefaultSize() {
-      return new Size(50, 70);
+      return new Size(PIN_WIDTH, PIN_HEIGHT);
     }
 
     function onPinClick(sender) {
@@ -286,7 +299,7 @@
 
     function onChangeFilter(advertisements) {
       clearShowedPins();
-      for (var i = 0; i < _pins.length && _filterPins.length <= 5; i++) {
+      for (var i = 0; i < _pins.length && _filterPins.length <= FILTERPINS_MAX_SIZE; i++) {
         var pin = _pins[i];
         for (var j = 0; j < advertisements.length; j++) {
           var advertisement = advertisements[j];
