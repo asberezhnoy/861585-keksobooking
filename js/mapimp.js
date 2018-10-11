@@ -268,29 +268,39 @@
     }
 
     function onPinClick(sender) {
-      showCard(new Card(sender.advertisement));
+      showCard(new Card(sender));
     }
 
-    function showPins() {
+    function showFilterPins() {
+      var closeShowedPin = true;
+
       var fragment = document.createDocumentFragment();
       _filterPins.forEach(function (pin) {
         fragment.appendChild(pin.element);
         pin.clickEvent = onPinClick;
+        closeShowedPin = closeShowedPin && _showedCard && pin != _showedCard.pin;
       });
+      if (closeShowedPin) {
+        clsoeShowedCard();
+      }
       _mapPins.appendChild(fragment);
     }
 
     function showCard(card) {
-      var fragment = document.createDocumentFragment();
-      fragment.appendChild(card.element);
-      if (_showedCard) {
-        _root.removeChild(_showedCard);
-      }
-      _root.insertBefore(fragment, _root.querySelector('.map__filters-container'));
-      _showedCard = card.element;
+      clsoeShowedCard();
+      _root.insertBefore(card.element, _root.querySelector('.map__filters-container'));
+      card.closeEvent = clsoeShowedCard;
+      _showedCard = card;
     }
 
-    function clearShowedPins() {
+    function clsoeShowedCard() {
+      if (_showedCard) {
+        _root.removeChild(_showedCard.element);
+        _showedCard = null;
+      }
+    }
+
+    function clearFilterPins() {
       _filterPins.forEach(function (pin) {
         _mapPins.removeChild(pin.element);
       });
@@ -298,7 +308,7 @@
     }
 
     function onChangeFilter(advertisements) {
-      clearShowedPins();
+      clearFilterPins();
       for (var i = 0; i < _pins.length && _filterPins.length <= FILTERPINS_MAX_SIZE; i++) {
         var pin = _pins[i];
         for (var j = 0; j < advertisements.length; j++) {
@@ -308,7 +318,7 @@
           }
         }
       }
-      showPins();
+      showFilterPins();
     }
   }
 

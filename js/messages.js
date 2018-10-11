@@ -2,8 +2,7 @@
 
 (function () {
   var Elements = window.Utils.Elements;
-
-  var ESCAPE_CODE = 27;
+  var KeyCodes = window.KeyCodes;
 
   function Error(parent) {
     var _parent = parent;
@@ -43,7 +42,7 @@
     };
 
     function close(evt) {
-      if (evt instanceof KeyboardEvent && evt.keyCode !== ESCAPE_CODE) {
+      if (evt instanceof KeyboardEvent && evt.keyCode !== KeyCodes.ESCAPE) {
         return;
       }
       _parent.removeChild(_element);
