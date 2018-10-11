@@ -278,7 +278,7 @@
       _filterPins.forEach(function (pin) {
         fragment.appendChild(pin.element);
         pin.clickEvent = onPinClick;
-        closeShowedPin = closeShowedPin && _showedCard && pin != _showedCard.pin;
+        closeShowedPin = closeShowedPin && _showedCard && pin !== _showedCard.pin;
       });
       if (closeShowedPin) {
         clsoeShowedCard();
