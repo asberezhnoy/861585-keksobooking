@@ -12,6 +12,8 @@
     var _btnSubmit = _root.querySelector('button[type="submit"');
     var _titleEl = _root.querySelector('#title');
     var _priceeEl = _root.querySelector('#price');
+    var _timeinEl = _root.querySelector('#timein');
+    var _timeoutEl = _root.querySelector('#timeout');
 
     var _self = this;
 
@@ -25,6 +27,8 @@
     _btnSubmit.addEventListener('click', onSubmit);
     _btnReset.addEventListener('click', onReset);
     _roomNumberEl.addEventListener('change', onRoomNumberChange);
+    _timeinEl.addEventListener('change', onTimeInOrOutChange);
+    _timeoutEl.addEventListener('change', onTimeInOrOutChange);
 
     this.onLoad = function () {
       setValidCapacity();
@@ -46,6 +50,12 @@
         value.classList.add('disabled');
       });
     };
+
+    function onTimeInOrOutChange(evt) {
+      var masterEl = evt.target === _timeinEl ? _timeinEl : _timeoutEl;
+      var slaveEl = masterEl === _timeinEl ? _timeoutEl : _timeinEl;
+      setValidTimeInAndOut(masterEl, slaveEl);
+    }
 
     function onSubmit(evt) {
       if (!_titleEl.checkValidity() || !_priceeEl.checkValidity()) {
@@ -73,6 +83,17 @@
     function reset() {
       _root.reset();
       setValidCapacity();
+    }
+
+    function setValidTimeInAndOut(masterEl, slaveEl) {
+      var masterValue = masterEl.selectedOptions[0].value;
+      for (var i = 0; i < slaveEl.children.length; i++) {
+        var child = slaveEl.children[i];
+        if (child.value === masterValue) {
+          slaveEl.selectedIndex = i;
+          break;
+        }
+      }
     }
 
     function setValidCapacity() {

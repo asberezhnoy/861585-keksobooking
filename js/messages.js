@@ -21,7 +21,7 @@
     };
 
     function close(evt) {
-      if (evt instanceof KeyboardEvent && evt.keyCode !== 27) {
+      if (evt instanceof KeyboardEvent && evt.keyCode !== KeyCodes.ESCAPE) {
         return;
       }
       _parent.removeChild(_element);
