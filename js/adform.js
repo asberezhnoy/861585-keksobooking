@@ -14,10 +14,12 @@
     var _priceeEl = _root.querySelector('#price');
     var _timeinEl = _root.querySelector('#timein');
     var _timeoutEl = _root.querySelector('#timeout');
-    var _avatarEl = _root.querySelector('.ad-form__field').querySelector('#avatar');
+    var _avatarFieldEl = _root.querySelector('.ad-form__field');
+    var _avatarEl = _avatarFieldEl.querySelector('#avatar');
     var _avatarViewEl = _root.querySelector('.ad-form-header__preview').querySelector('img');
     var _imageContainerEl = _root.querySelector('.ad-form__photo-container');
-    var _imagesEl = _imageContainerEl.querySelector('.ad-form__upload').querySelector('#images');
+    var _imageUploadEl = _imageContainerEl.querySelector('.ad-form__upload');
+    var _imagesEl = _imageUploadEl.querySelector('#images');
     var _imageViewEl = _imageContainerEl.querySelector('.ad-form__photo');
     var _self = this;
 
@@ -36,6 +38,22 @@
     _timeoutEl.addEventListener('change', onTimeInOrOutChange);
     _avatarEl.addEventListener('change', onAvatarChange);
     _imagesEl.addEventListener('change', onImagesChange);
+    _avatarFieldEl.addEventListener('dragover', onAvatarDragOver);
+    _avatarFieldEl.addEventListener('drop', onAvatarChange);
+    _imageUploadEl.addEventListener('dragover', onImageUploadDragOver);
+    _imageUploadEl.addEventListener('drop', onImagesChange);
+
+    function onImageUploadDragOver(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy';
+    }
+
+    function onAvatarDragOver(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy';
+    }
 
     function onLoad() {
       setValidCapacity();
@@ -62,15 +80,25 @@
       });
     }
 
-    function onAvatarChange() {
+    function onAvatarChange(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
+      var file = evt instanceof DragEvent ? evt.dataTransfer.files[0] : _avatarEl.files[0];
+
       var fReader = new FileReader();
-      fReader.readAsDataURL(_avatarEl.files[0]);
+      fReader.readAsDataURL(file);
       fReader.onloadend = avatarFReaerLoadnEnd;
     }
 
-    function onImagesChange() {
+    function onImagesChange(evt) {
+      evt.stopPropagation();
+      evt.preventDefault();
+
+      var file = evt instanceof DragEvent ? evt.dataTransfer.files[0] : _imagesEl.files[0];
+
       var fReader = new FileReader();
-      fReader.readAsDataURL(_imagesEl.files[0]);
+      fReader.readAsDataURL(file);
       fReader.onloadend = imageFReaderLoadEnd;
     }
 
