@@ -14,6 +14,10 @@
     var _priceeEl = _root.querySelector('#price');
     var _timeinEl = _root.querySelector('#timein');
     var _timeoutEl = _root.querySelector('#timeout');
+    var _avatarEl = _root.querySelector('.ad-form__field').querySelector('#avatar');
+    var _avatarViewEl = _root.querySelector('.ad-form-header__preview').querySelector('img');
+    var _imagesEl = _root.querySelector('.ad-form__upload').querySelector('#images');
+    var _imageViewEl = _root.querySelector('.ad-form__photo');
 
     var _self = this;
 
@@ -29,6 +33,8 @@
     _roomNumberEl.addEventListener('change', onRoomNumberChange);
     _timeinEl.addEventListener('change', onTimeInOrOutChange);
     _timeoutEl.addEventListener('change', onTimeInOrOutChange);
+    _avatarEl.addEventListener('change', onAvatarChange);
+    _imagesEl.addEventListener('change', onImagesChange);
 
     this.onLoad = function () {
       setValidCapacity();
@@ -50,6 +56,24 @@
         value.classList.add('disabled');
       });
     };
+
+    function onAvatarChange() {
+      var fReader = new FileReader();
+      fReader.readAsDataURL(_avatarEl.files[0]);
+      fReader.onloadend = function (event) {
+        _avatarViewEl.src = event.target.result;
+      };
+    }
+
+    function onImagesChange() {
+      var fReader = new FileReader();
+      fReader.readAsDataURL(_imagesEl.files[0]);
+      fReader.onloadend = function (event) {
+        var img = document.createElement('img');
+        img.src = event.target.result;
+        _imageViewEl.appendChild(img);
+      };
+    }
 
     function onTimeInOrOutChange(evt) {
       var masterEl = evt.target === _timeinEl ? _timeinEl : _timeoutEl;
