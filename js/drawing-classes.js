@@ -3,12 +3,16 @@
 
 (function () {
   function Point(x, y) {
+    var _self = this;
+
     this.x = x;
     this.y = y;
 
-    this.toString = function () {
-      return this.x + ', ' + this.y;
-    };
+    this.toString = toString;
+
+    function toString() {
+      return _self.x + ', ' + _self.y;
+    }
   }
 
   function Size(width, height) {

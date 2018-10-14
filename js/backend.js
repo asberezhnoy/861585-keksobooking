@@ -10,20 +10,23 @@
     var _callbacknLoad = callbacknLoad;
     var _callbackError = callbackError;
 
+    this.get = get;
+    this.post = post;
+
     _xhr.addEventListener('load', onLoad);
     _xhr.addEventListener('error', onError);
     _xhr.addEventListener('timeout', onTimeout);
 
-    this.get = function () {
+    function get() {
       _xhr.responseType = 'json';
       _xhr.open('GET', _url);
       _xhr.send();
-    };
+    }
 
-    this.post = function (data) {
+    function post(data) {
       _xhr.open('POST', _url);
       _xhr.send(data);
-    };
+    }
 
     function onLoad() {
       if (_xhr.status === 200) {

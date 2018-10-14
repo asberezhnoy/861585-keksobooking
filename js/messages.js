@@ -10,15 +10,17 @@
     var _messageEl = _element.querySelector('.error__message');
     var _btn = _element.querySelector('.error__button');
 
+    this.show = show;
+
     _btn.addEventListener('click', close);
 
-    this.show = function (message) {
+    function show(message) {
       document.addEventListener('keyup', close);
       document.addEventListener('click', close);
 
       _messageEl.textContent = message;
       _parent.appendChild(_element);
-    };
+    }
 
     function close(evt) {
       if (evt instanceof KeyboardEvent && evt.keyCode !== KeyCodes.ESCAPE) {
@@ -34,12 +36,14 @@
     var _parent = parent;
     var _element = Elements.find('.success', '#success').cloneNode(true);
 
-    this.show = function () {
+    this.show = show;
+
+    function show() {
       document.addEventListener('keyup', close);
       document.addEventListener('click', close);
 
       _parent.appendChild(_element);
-    };
+    }
 
     function close(evt) {
       if (evt instanceof KeyboardEvent && evt.keyCode !== KeyCodes.ESCAPE) {

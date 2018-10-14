@@ -65,13 +65,14 @@
     this.element = _root;
     this.dragEvent = null;
     this.mouseMoveEvent = null;
+    this.disable = disable;
 
     _root.addEventListener('mousedown', onMouseDown);
 
-    this.disable = function () {
+    function disable() {
       _root.style.left = _clientRect.leftTopCorner.x + 'px';
       _root.style.top = _clientRect.leftTopCorner.y + 'px';
-    };
+    }
 
     function onMouseUp(evt) {
       document.removeEventListener('mousemove', onMouseMove);
@@ -158,6 +159,7 @@
     var _advertisements = [];
 
     this.changeEvent = null;
+    this.setAdvertisements = setAdvertisements;
 
     _bookingTypeEl.addEventListener('change', onChange);
     _housingPriceEl.addEventListener('change', onChange);
@@ -167,9 +169,9 @@
       item.addEventListener('change', onChangeFeatures);
     });
 
-    this.setAdvertisements = function (advertisements) {
+    function setAdvertisements(advertisements) {
       _advertisements = advertisements;
-    };
+    }
 
     function onChange() {
       filter();
@@ -236,10 +238,13 @@
     var _filterPins = [];
 
     this.mainPin = _mainPin;
+    this.disable = disable;
+    this.activate = activate;
+    this.setAdvertisements = setAdvertisements;
 
     _filter.changeEvent = onChangeFilter;
 
-    this.setAdvertisements = function (advertisements) {
+    function setAdvertisements(advertisements) {
       _pins.length = 0;
       var pinSize = getPinDefaultSize();
 
@@ -248,20 +253,21 @@
       }
       _filter.setAdvertisements(advertisements);
       onChangeFilter(advertisements);
-    };
+    }
 
-    this.activate = function () {
+    function activate() {
       _root.classList.remove('map--faded');
-    };
+    }
 
-    this.disable = function () {
+    function disable() {
       _filterPins.forEach(function (pin) {
         _mapPins.removeChild(pin.element);
       });
 
+      clsoeShowedCard();
       _root.classList.add('map--faded');
       _mainPin.disable();
-    };
+    }
 
     function getPinDefaultSize() {
       return new Size(PIN_WIDTH, PIN_HEIGHT);

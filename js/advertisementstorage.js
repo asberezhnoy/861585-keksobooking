@@ -4,13 +4,16 @@
   var Backend = window.Backend;
 
   function Storage() {
-    this.get = function (callbackLoad, callbackError) {
-      Backend.download(callbackLoad, callbackError);
-    };
+    this.get = get;
+    this.save = set;
 
-    this.save = function (data, callbackLoad, callbackError) {
+    function get(callbackLoad, callbackError) {
+      Backend.download(callbackLoad, callbackError);
+    }
+
+    function set(data, callbackLoad, callbackError) {
       Backend.upload(data, callbackLoad, callbackError);
-    };
+    }
   }
 
   window.AdvertisementStorage = Storage;

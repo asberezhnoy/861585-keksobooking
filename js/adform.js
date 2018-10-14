@@ -16,17 +16,18 @@
     var _timeoutEl = _root.querySelector('#timeout');
     var _avatarEl = _root.querySelector('.ad-form__field').querySelector('#avatar');
     var _avatarViewEl = _root.querySelector('.ad-form-header__preview').querySelector('img');
-    var _imagesEl = _root.querySelector('.ad-form__upload').querySelector('#images');
-    var _imageViewEl = _root.querySelector('.ad-form__photo');
-
+    var _imageContainerEl = _root.querySelector('.ad-form__photo-container');
+    var _imagesEl = _imageContainerEl.querySelector('.ad-form__upload').querySelector('#images');
+    var _imageViewEl = _imageContainerEl.querySelector('.ad-form__photo');
     var _self = this;
 
     this.submitEvent = null;
     this.resetEvent = null;
 
-    this.setAddress = function (address) {
-      _addrEl.value = address;
-    };
+    this.onLoad = onLoad;
+    this.activate = activate;
+    this.disable = disable;
+    this.setAddress = setAddress;
 
     _btnSubmit.addEventListener('click', onSubmit);
     _btnReset.addEventListener('click', onReset);
@@ -36,43 +37,41 @@
     _avatarEl.addEventListener('change', onAvatarChange);
     _imagesEl.addEventListener('change', onImagesChange);
 
-    this.onLoad = function () {
+    function onLoad() {
       setValidCapacity();
-    };
+    }
 
-    this.activate = function () {
+    function setAddress(address) {
+      _addrEl.value = address;
+    }
+
+    function activate() {
       _root.classList.remove('ad-form--disabled');
       var elements = _root.querySelectorAll('fieldset');
       elements.forEach(function (value) {
         value.classList.remove('disabled');
       });
-    };
+    }
 
-    this.disable = function () {
+    function disable() {
       reset();
       _root.classList.add('ad-form--disabled');
       var elements = _root.querySelectorAll('fieldset');
       elements.forEach(function (value) {
         value.classList.add('disabled');
       });
-    };
+    }
 
     function onAvatarChange() {
       var fReader = new FileReader();
       fReader.readAsDataURL(_avatarEl.files[0]);
-      fReader.onloadend = function (event) {
-        _avatarViewEl.src = event.target.result;
-      };
+      fReader.onloadend = avatarFReaerLoadnEnd;
     }
 
     function onImagesChange() {
       var fReader = new FileReader();
       fReader.readAsDataURL(_imagesEl.files[0]);
-      fReader.onloadend = function (event) {
-        var img = document.createElement('img');
-        img.src = event.target.result;
-        _imageViewEl.appendChild(img);
-      };
+      fReader.onloadend = imageFReaderLoadEnd;
     }
 
     function onTimeInOrOutChange(evt) {
@@ -102,6 +101,20 @@
 
     function onRoomNumberChange() {
       setValidCapacity();
+    }
+
+    function avatarFReaerLoadnEnd(event) {
+      _avatarViewEl.src = event.target.result;
+    }
+
+    function imageFReaderLoadEnd(event) {
+      var cloneNode = _imageViewEl.cloneNode();
+      var img = document.createElement('img');
+      img.src = event.target.result;
+      _imageViewEl.appendChild(img);
+
+      _imageContainerEl.appendChild(cloneNode);
+      _imageViewEl = cloneNode;
     }
 
     function reset() {

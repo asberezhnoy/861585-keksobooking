@@ -71,16 +71,22 @@ function displayError(message) {
   _errorMsg.show(message);
 }
 
-window.onload = function () {
-  _map.mainPin.dragEvent = function () {
-    _map.mainPin.dragEvent = null;
-    setAddress(_map.mainPin.element);
-    getAdvertisements();
-    activate();
-  };
-  _map.mainPin.mouseMoveEvent = function () {
-    setAddress(_map.mainPin.element);
-  };
+function mainPinDragEvenHandler() {
+  _map.mainPin.dragEvent = null;
+  setAddress(_map.mainPin.element);
+  getAdvertisements();
+  activate();
+}
+
+function mainPinMouseMoveEventHandler() {
+  setAddress(_map.mainPin.element);
+}
+
+function load() {
+  _map.mainPin.dragEvent = mainPinDragEvenHandler;
+  _map.mainPin.mouseMoveEvent = mainPinMouseMoveEventHandler;
   setAddress(_map.mainPin.element);
   _adForm.onLoad();
-};
+}
+
+window.onload = load;
