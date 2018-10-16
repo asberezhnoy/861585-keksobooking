@@ -138,6 +138,8 @@
     function imageFReaderLoadEnd(event) {
       var cloneNode = _imageViewEl.cloneNode();
       var img = document.createElement('img');
+      img.width = _imageViewEl.offsetWidth;
+      img.height = _imageViewEl.offsetHeight;
       img.src = event.target.result;
       _imageViewEl.appendChild(img);
 
