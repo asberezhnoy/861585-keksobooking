@@ -21,6 +21,9 @@
     var _imageUploadEl = _imageContainerEl.querySelector('.ad-form__upload');
     var _imagesEl = _imageUploadEl.querySelector('#images');
     var _imageViewEl = _imageContainerEl.querySelector('.ad-form__photo');
+    var _buildingTyperEl = _root.querySelector('#type');
+    var _pricerEl = _root.querySelector('#price');
+
     var _self = this;
 
     this.submitEvent = null;
@@ -42,6 +45,7 @@
     _avatarFieldEl.addEventListener('drop', onAvatarChange);
     _imageUploadEl.addEventListener('dragover', onImageUploadDragOver);
     _imageUploadEl.addEventListener('drop', onImagesChange);
+    _buildingTyperEl.addEventListener('change', onBuilderTypeChange);
 
     function onImageUploadDragOver(evt) {
       evt.stopPropagation();
@@ -57,6 +61,7 @@
 
     function onLoad() {
       setValidCapacity();
+      setValidMinPrice();
     }
 
     function setAddress(address) {
@@ -131,6 +136,10 @@
       setValidCapacity();
     }
 
+    function onBuilderTypeChange() {
+      setValidMinPrice();
+    }
+
     function avatarFReaerLoadnEnd(event) {
       _avatarViewEl.src = event.target.result;
     }
@@ -176,6 +185,14 @@
         }
       }
       _capacityEl.selectedIndex = newSelectIndex;
+    }
+
+    function setValidMinPrice() {
+      var buildingTyper = _buildingTyperEl.selectedOptions[0].value;
+      var minPrice = buildingTyper in Building.minPrice ? Building.minPrice[buildingTyper] : 0;
+
+      _pricerEl.min = minPrice.toString();
+      _pricerEl.placeholder = minPrice.toString();
     }
   }
 
